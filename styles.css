@@ -1,8 +1,8 @@
 body {
     margin: 0;
     padding: 0;
-    font-family: Arial, sans-serif; /* Added for better readability */
-    position: relative; /* Enable positioning of the search input */
+    font-family: Arial, sans-serif;
+    position: relative; /* Enable positioning of the search input and button */
 }
 
 #map {
@@ -40,4 +40,22 @@ body {
 
 #gps-button:hover {
     background: #218838; /* Darker green on hover */
+}
+
+/* Suggestions Styles */
+.suggestion {
+    position: absolute;
+    background: white;
+    border: 1px solid #ccc;
+    padding: 10px;
+    cursor: pointer;
+    z-index: 1000; /* Ensure suggestions are on top */
+    width: 80%; /* Match input width */
+    max-width: 400px; /* Limit width */
+    margin: 0 auto; /* Center suggestions */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Shadow for depth */
+}
+
+.suggestion:hover {
+    background-color: #f0f0f0; /* Highlight on hover */
 }
