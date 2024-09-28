@@ -56,11 +56,44 @@ function showError(error) {
 }
 
 // Add a GPS button to the map
-const gpsButton = document.createElement('button');
-gpsButton.innerHTML = "Get My Location";
-gpsButton.id = "gps-button";
+const gpsButton = document.getElementById('gps-button');
 gpsButton.onclick = getLocation; // Set the button's click handler
-document.body.appendChild(gpsButton);
 
-// Address search functionality remains the same as before...
-// (Include the previous address search code here)
+// Address search functionality
+const searchInput = document.getElementById('search');
+
+searchInput.addEventListener('input', function() {
+    const query = this.value;
+
+    if (query.length > 2) { // Trigger suggestions after 2 characters
+        fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&addressdetails=1&limit=5`)
+            .then(response => response.json())
+            .then(data => {
+                // Clear previous suggestions
+                clearSuggestions();
+
+                // Display suggestions
+                data.forEach(item => {
+                    const suggestion = document.createElement('div');
+                    suggestion.classList.add('suggestion');
+                    suggestion.textContent = item.display_name;
+                    suggestion.addEventListener('click', () => {
+                        // When a suggestion is clicked, move the map to the location
+                        map.setView([item.lat, item.lon], 15); // Zoom to the location
+                        L.marker([item.lat, item.lon]).addTo(map); // Optionally add a marker
+                        searchInput.value = item.display_name; // Set the input to the selected suggestion
+                        clearSuggestions(); // Clear suggestions
+                    });
+                    document.body.appendChild(suggestion); // Append suggestions to the body
+                });
+            });
+    } else {
+        clearSuggestions(); // Clear suggestions if input is less than 2 characters
+    }
+});
+
+// Function to clear suggestions
+function clearSuggestions() {
+    const suggestions = document.querySelectorAll('.suggestion');
+    suggestions.forEach(suggestion => suggestion.remove());
+}
