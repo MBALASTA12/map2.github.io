@@ -8,62 +8,59 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
 }).addTo(map);
 
-// Address search functionality
-const searchInput = document.getElementById('search');
+// Create a marker for the user's location
+let userMarker;
 
-searchInput.addEventListener('input', function() {
-    const query = this.value;
-
-    if (query.length > 2) { // Trigger suggestions after 2 characters
-        fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&addressdetails=1&limit=5`)
-            .then(response => response.json())
-            .then(data => {
-                // Clear previous suggestions
-                clearSuggestions();
-
-                // Display suggestions
-                data.forEach(item => {
-                    const suggestion = document.createElement('div');
-                    suggestion.classList.add('suggestion');
-                    suggestion.textContent = item.display_name;
-                    suggestion.addEventListener('click', () => {
-                        // When a suggestion is clicked, move the map to the location
-                        map.setView([item.lat, item.lon], 15); // Zoom to the location
-                        L.marker([item.lat, item.lon]).addTo(map); // Optionally add a marker
-                        searchInput.value = item.display_name; // Set the input to the selected suggestion
-                        clearSuggestions(); // Clear suggestions
-                    });
-                    document.body.appendChild(suggestion); // Append suggestions to the body
-                });
-            });
+// Function to get the user's current GPS location
+function getLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition, showError);
     } else {
-        clearSuggestions(); // Clear suggestions if input is less than 2 characters
+        alert("Geolocation is not supported by this browser.");
     }
-});
-
-// Function to clear suggestions
-function clearSuggestions() {
-    const suggestions = document.querySelectorAll('.suggestion');
-    suggestions.forEach(suggestion => suggestion.remove());
 }
 
-// Optional: Style suggestions in CSS
-const style = document.createElement('style');
-style.innerHTML = `
-    .suggestion {
-        position: absolute;
-        background: white;
-        border: 1px solid #ccc;
-        padding: 10px;
-        cursor: pointer;
-        z-index: 1000; /* Ensure suggestions are on top */
-        width: 80%; /* Match input width */
-        max-width: 400px; /* Limit width */
-        margin: 0 auto; /* Center suggestions */
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Shadow for depth */
+// Function to show the user's position on the map
+function showPosition(position) {
+    const lat = position.coords.latitude;
+    const lon = position.coords.longitude;
+
+    // Move the map to the user's location
+    map.setView([lat, lon], 15); // Zoom into the user's location
+
+    // Add or update the user marker
+    if (userMarker) {
+        userMarker.setLatLng([lat, lon]);
+    } else {
+        userMarker = L.marker([lat, lon]).addTo(map)
+            .bindPopup("You are here!").openPopup(); // Popup for user location
     }
-    .suggestion:hover {
-        background-color: #f0f0f0; /* Highlight on hover */
+}
+
+// Function to handle geolocation errors
+function showError(error) {
+    switch(error.code) {
+        case error.PERMISSION_DENIED:
+            alert("User denied the request for Geolocation.");
+            break;
+        case error.POSITION_UNAVAILABLE:
+            alert("Location information is unavailable.");
+            break;
+        case error.TIMEOUT:
+            alert("The request to get user location timed out.");
+            break;
+        case error.UNKNOWN_ERROR:
+            alert("An unknown error occurred.");
+            break;
     }
-`;
-document.head.appendChild(style);
+}
+
+// Add a GPS button to the map
+const gpsButton = document.createElement('button');
+gpsButton.innerHTML = "Get My Location";
+gpsButton.id = "gps-button";
+gpsButton.onclick = getLocation; // Set the button's click handler
+document.body.appendChild(gpsButton);
+
+// Address search functionality remains the same as before...
+// (Include the previous address search code here)
