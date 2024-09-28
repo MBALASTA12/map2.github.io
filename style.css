@@ -1,0 +1,13 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif; /* Added for better readability */
+}
+
+#map {
+    height: 100vh; /* Ensure the map takes the full viewport height */
+    width: 100%; /* Ensure the map takes the full width */
+    position: absolute; /* Allows map to cover the entire viewport */
+    top: 0; /* Align map to the top */
+    left: 0; /* Align map to the left */
+}
