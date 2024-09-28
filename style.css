@@ -2,12 +2,24 @@ body {
     margin: 0;
     padding: 0;
     font-family: Arial, sans-serif; /* Added for better readability */
+    position: relative; /* Enable positioning of the search input */
 }
 
 #map {
     height: 100vh; /* Ensure the map takes the full viewport height */
     width: 100%; /* Ensure the map takes the full width */
-    position: absolute; /* Allows map to cover the entire viewport */
-    top: 0; /* Align map to the top */
-    left: 0; /* Align map to the left */
+}
+
+#search {
+    position: absolute; /* Position it absolutely within the body */
+    top: 50%; /* Center vertically */
+    left: 50%; /* Center horizontally */
+    transform: translate(-50%, -50%); /* Offset the input's own dimensions */
+    padding: 10px;
+    width: 80%; /* Responsive width */
+    max-width: 400px; /* Max width for larger screens */
+    border: 1px solid #ccc; /* Border styling */
+    border-radius: 4px; /* Rounded corners */
+    font-size: 16px; /* Font size */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Shadow for depth */
 }
