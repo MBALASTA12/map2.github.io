@@ -1,28 +1,9 @@
-// script.js
-const map = L.map('map').setView([6.12108, 125.15882], 13); // Set initial coordinates and zoom level
+// Initialize the map
+const map = L.map('map', {
+    zoomControl: false // Disable zoom control buttons
+}).setView([13.41, 122.56], 6); // Centered over the Philippines
 
+// Load OpenStreetMap tiles
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
 }).addTo(map);
-
-// Add a marker to the map
-const marker = L.marker([6.12108, 125.15882]).addTo(map);
-
-// Function to move the marker to a new location
-function moveMarker(lat, lon) {
-    marker.setLatLng([lat, lon]);
-    map.setView([lat, lon], 13);
-}
-
-// Example: Move marker to new location after 3 seconds
-setTimeout(() => {
-    moveMarker(6.125, 125.16); // Replace with actual coordinates
-}, 3000);
-
-// Click event to place a marker on the map
-map.on('click', function(e) {
-    const lat = e.latlng.lat;
-    const lon = e.latlng.lng;
-    moveMarker(lat, lon);
-    // You can also implement logic to get the address from the coordinates using OpenStreetMap API
-});
